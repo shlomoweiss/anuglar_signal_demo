@@ -1,0 +1,43 @@
+@if (store.selectedProduct(); as product) {
+  <div class="detail-panel">
+    <h3 class="detail-panel__title">Product Details</h3>
+
+    @if (product.imageUrl) {
+      <img
+        class="detail-panel__image"
+        [src]="product.imageUrl"
+        [alt]="product.name"
+      />
+    }
+
+    <dl class="detail-panel__details">
+      <dt>ID</dt>
+      <dd>{{ product.id }}</dd>
+
+      <dt>Name</dt>
+      <dd>{{ product.name }}</dd>
+
+      <dt>Description</dt>
+      <dd>{{ product.description }}</dd>
+
+      <dt>Price</dt>
+      <dd>{{ product.price | currency:'USD':'symbol':'1.2-2' }}</dd>
+
+      <dt>Category</dt>
+      <dd>
+        <span class="category-badge" [attr.data-category]="product.category">
+          {{ product.category }}
+        </span>
+      </dd>
+
+      <dt>Stock</dt>
+      <dd [class.low-stock]="product.stock < 10">{{ product.stock }} units</dd>
+
+      <dt>Status</dt>
+      <dd>{{ product.active ? 'Active' : 'Inactive' }}</dd>
+
+      <dt>Created</dt>
+      <dd>{{ product.createdAt | date:'mediumDate' }}</dd>
+    </dl>
+  </div>
+}

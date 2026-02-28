@@ -1,0 +1,108 @@
+<!-- store.loading() / store.error() come from withLoadingState() custom feature -->
+@if (store.loading()) {
+  <div class="loading-bar" aria-label="Loading users...">
+    <div class="loading-bar__fill"></div>
+  </div>
+}
+
+@if (store.error()) {
+  <div class="error-banner" role="alert">
+    <span>⚠ {{ store.error() }}</span>
+    <button (click)="onRetry()">Retry</button>
+  </div>
+}
+
+<!-- Filter bar — patchState({ searchQuery }) / patchState({ filterRole }) -->
+<div class="toolbar">
+  <input
+    class="search-input"
+    type="search"
+    placeholder="Search users..."
+    [value]="store.searchQuery()"
+    (input)="onSearch($any($event.target).value)"
+  />
+
+  <div class="role-filters">
+    @for (role of roles; track role) {
+      <button
+        class="filter-btn"
+        [class.filter-btn--active]="store.filterRole() === role"
+        (click)="onFilterRole(role)"
+      >
+        {{ role }}
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Stats — these come from withComputed() -->
+<div class="stats-bar">
+  <span class="stat">Total: <strong>{{ store.totalUsers() }}</strong></span>
+  <span class="stat">Active: <strong>{{ store.activeCount() }}</strong></span>
+  <span class="stat">Admins: <strong>{{ store.adminCount() }}</strong></span>
+  <span class="stat">Showing: <strong>{{ store.filteredUsers().length }}</strong></span>
+</div>
+
+<!-- Entity list — store.filteredUsers() from withComputed() -->
+<ul class="user-list" role="list">
+  @for (user of store.filteredUsers(); track user.id) {
+    <li
+      class="user-card"
+      [class.user-card--selected]="store.selectedId() === user.id"
+      (click)="onSelectUser(user.id)"
+    >
+      <div class="user-card__avatar" [attr.data-role]="user.role">
+        {{ user.name | slice:0:2 | uppercase }}
+      </div>
+
+      <div class="user-card__info">
+        <span class="user-card__name">{{ user.name }}</span>
+        <span class="user-card__email">{{ user.email }}</span>
+      </div>
+
+      <span class="user-card__role" [attr.data-role]="user.role">
+        {{ user.role }}
+      </span>
+
+      <span
+        class="user-card__status"
+        [class.user-card__status--active]="user.active"
+        [title]="user.active ? 'Active' : 'Inactive'"
+      ></span>
+
+      <div class="user-card__actions">
+        <button
+          class="btn btn--sm btn--ghost"
+          (click)="onToggleActive($event, user.id)"
+        >
+          {{ user.active ? 'Deactivate' : 'Activate' }}
+        </button>
+
+        <button
+          class="btn btn--sm btn--danger"
+          (click)="onRemoveUser($event, user.id)"
+          aria-label="Remove user"
+        >
+          ✕
+        </button>
+      </div>
+    </li>
+  } @empty {
+    <li class="user-list__empty">No users match your filters.</li>
+  }
+</ul>
+
+<!-- selectedUser — from withComputed(), reacts to selectedId signal -->
+@if (store.selectedUser(); as user) {
+  <div class="selected-panel">
+    <h3 class="selected-panel__title">Selected User</h3>
+    <dl class="selected-panel__details">
+      <dt>ID</dt>      <dd>{{ user.id }}</dd>
+      <dt>Name</dt>    <dd>{{ user.name }}</dd>
+      <dt>Email</dt>   <dd>{{ user.email }}</dd>
+      <dt>Role</dt>    <dd>{{ user.role }}</dd>
+      <dt>Status</dt>  <dd>{{ user.active ? 'Active' : 'Inactive' }}</dd>
+      <dt>Created</dt> <dd>{{ user.createdAt | date:'mediumDate' }}</dd>
+    </dl>
+  </div>
+}

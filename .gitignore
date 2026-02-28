@@ -1,0 +1,6 @@
+.angular/*
+dist/*
+build/*
+node_modules/*
+coverage/*
+

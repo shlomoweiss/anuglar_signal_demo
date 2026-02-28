@@ -1,0 +1,54 @@
+.detail-panel {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  &__title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+    margin-bottom: 0.875rem;
+  }
+
+  &__image {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    background: #f3f4f6;
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.4rem 1rem;
+    font-size: 0.875rem;
+
+    dt { color: #9ca3af; font-weight: 500; }
+    dd { font-weight: 600; color: #111827; word-break: break-word; }
+  }
+}
+
+.category-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &[data-category="electronics"] { background: #dbeafe; color: #2563eb; }
+  &[data-category="clothing"]    { background: #fce7f3; color: #db2777; }
+  &[data-category="food"]        { background: #d1fae5; color: #059669; }
+  &[data-category="other"]       { background: #f3f4f6; color: #6b7280; }
+}
+
+.low-stock {
+  color: #dc2626 !important;
+}

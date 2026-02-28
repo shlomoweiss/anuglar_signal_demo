@@ -1,0 +1,97 @@
+@if (store.loading()) {
+  <div class="loading-bar" aria-label="Loading products...">
+    <div class="loading-bar__fill"></div>
+  </div>
+}
+
+@if (store.error()) {
+  <div class="error-banner" role="alert">
+    <span>⚠ {{ store.error() }}</span>
+    <button (click)="onRetry()">Retry</button>
+  </div>
+}
+
+<div class="toolbar">
+  <input
+    class="search-input"
+    type="search"
+    placeholder="Search products..."
+    [value]="store.searchQuery()"
+    (input)="onSearch($any($event.target).value)"
+  />
+
+  <div class="category-filters">
+    @for (cat of categories; track cat) {
+      <button
+        class="filter-btn"
+        [class.filter-btn--active]="store.filterCategory() === cat"
+        (click)="onFilterCategory(cat)"
+      >
+        {{ cat }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="stats-bar">
+  <span class="stat">Total: <strong>{{ store.totalProducts() }}</strong></span>
+  <span class="stat">Active: <strong>{{ store.activeCount() }}</strong></span>
+  <span class="stat">Low Stock: <strong>{{ store.lowStockCount() }}</strong></span>
+  <span class="stat">Showing: <strong>{{ store.filteredProducts().length }}</strong></span>
+</div>
+
+<ul class="product-list" role="list">
+  @for (product of store.filteredProducts(); track product.id) {
+    <li
+      class="product-card"
+      [class.product-card--selected]="store.selectedId() === product.id"
+      (click)="onSelectProduct(product.id)"
+    >
+      <div class="product-card__avatar" [attr.data-category]="product.category">
+        {{ product.name | slice:0:2 | uppercase }}
+      </div>
+
+      <div class="product-card__info">
+        <span class="product-card__name">{{ product.name }}</span>
+        <span class="product-card__desc">{{ product.description | slice:0:60 }}{{ product.description.length > 60 ? '…' : '' }}</span>
+      </div>
+
+      <span class="product-card__price">
+        {{ product.price | currency:'USD':'symbol':'1.2-2' }}
+      </span>
+
+      <span class="product-card__category" [attr.data-category]="product.category">
+        {{ product.category }}
+      </span>
+
+      <span class="product-card__stock" [class.product-card__stock--low]="product.stock < 10">
+        {{ product.stock }} in stock
+      </span>
+
+      <span
+        class="product-card__status"
+        [class.product-card__status--active]="product.active"
+        [title]="product.active ? 'Active' : 'Inactive'"
+      ></span>
+
+      <div class="product-card__actions">
+        <button
+          class="btn btn--sm btn--ghost"
+          (click)="onToggleActive($event, product.id)"
+        >
+          {{ product.active ? 'Deactivate' : 'Activate' }}
+        </button>
+
+        <button
+          class="btn btn--sm btn--danger"
+          (click)="onRemoveProduct($event, product.id)"
+          aria-label="Remove product"
+        >
+          ✕
+        </button>
+      </div>
+    </li>
+  } @empty {
+    <li class="product-list__empty">No products match your filters.</li>
+  }
+</ul>

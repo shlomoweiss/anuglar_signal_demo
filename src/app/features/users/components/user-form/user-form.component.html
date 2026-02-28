@@ -1,0 +1,49 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <h3 class="form-title">Add New User</h3>
+
+  <div class="form-group">
+    <label for="name">Full Name</label>
+    <input
+      id="name"
+      type="text"
+      formControlName="name"
+      placeholder="e.g. Sarah Connor"
+      [class.is-invalid]="form.controls.name.invalid && form.controls.name.touched"
+    />
+    @if (form.controls.name.invalid && form.controls.name.touched) {
+      <span class="form-error">Name is required (min 2 chars)</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      placeholder="e.g. user@company.com"
+      [class.is-invalid]="form.controls.email.invalid && form.controls.email.touched"
+    />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      <span class="form-error">Valid email is required</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="role">Role</label>
+    <select id="role" formControlName="role">
+      @for (role of roles; track role) {
+        <option [value]="role">{{ role | titlecase }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- store.loading() — from withLoadingState() custom feature -->
+  <button
+    type="submit"
+    class="btn btn--primary"
+    [disabled]="form.invalid || store.loading()"
+  >
+    @if (store.loading()) { Saving... } @else { Add User }
+  </button>
+</form>
