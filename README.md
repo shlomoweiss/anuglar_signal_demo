@@ -24,22 +24,40 @@ src/app/
 │       └── loading.feature.ts        # ⑤ Custom withXXX (signalStoreFeature)
 │
 ├── features/
-│   └── users/
+│   ├── users/
+│   │   ├── store/
+│   │   │   └── users.store.ts        # ← THE STORE (all withXXX here)
+│   │   ├── components/
+│   │   │   ├── user-list/
+│   │   │   │   ├── user-list.component.ts
+│   │   │   │   ├── user-list.component.html
+│   │   │   │   └── user-list.component.scss
+│   │   │   └── user-form/
+│   │   │       ├── user-form.component.ts
+│   │   │       └── user-form.component.html
+│   │   └── users-page.component.ts   # Feature shell (routed)
+│   └── products/
 │       ├── store/
-│       │   └── users.store.ts        # ← THE STORE (all withXXX here)
+│       │   └── products.store.ts     # SignalStore for products (withEntities, withMethods, etc.)
 │       ├── components/
-│       │   ├── user-list/
-│       │   │   ├── user-list.component.ts
-│       │   │   ├── user-list.component.html
-│       │   │   └── user-list.component.scss
-│       │   └── user-form/
-│       │       ├── user-form.component.ts
-│       │       └── user-form.component.html
-│       └── users-page.component.ts   # Feature shell (routed)
+│       │   ├── product-list/
+│       │   │   ├── product-list.component.ts
+│       │   │   ├── product-list.component.html
+│       │   │   └── product-list.component.scss
+│       │   ├── product-form/
+│       │   │   ├── product-form.component.ts
+│       │   │   ├── product-form.component.html
+│       │   │   └── product-form.component.scss
+│       │   └── product-detail/
+│       │       ├── product-detail.component.ts
+│       │       ├── product-detail.component.html
+│       │       └── product-detail.component.scss
+│       └── products-page.component.ts # Feature shell (routed)
 │
 ├── shared/
 │   └── models/
-│       └── user.model.ts             # User interface + UserRole type
+│       ├── user.model.ts             # User interface + UserRole type
+│       └── product.model.ts          # Product interface + ProductCategory
 │
 ├── app.component.ts                  # Root shell
 ├── app.config.ts                     # provideZonelessChangeDetection()
@@ -91,3 +109,30 @@ src/app/
 ```bash
 ng add @ngrx/signals
 ```
+
+## Product feature
+
+The Product feature provides a small product-management UI (list, create form, detail pane) and a SignalStore-backed `ProductsStore`. Visit the feature at the route `/products` (see `src/app/app.routes.ts`). The feature uses `ProductService`, which currently returns mock data.
+
+Core files:
+
+- src/app/features/products/products-page.component.ts
+- src/app/features/products/components/product-list/product-list.component.ts
+- src/app/features/products/components/product-form/product-form.component.ts
+- src/app/features/products/components/product-detail/product-detail.component.ts
+- src/app/features/products/store/products.store.ts
+- src/app/core/services/product.service.ts
+- src/app/shared/models/product.model.ts
+
+Quick start:
+
+```bash
+npm install
+ng serve
+```
+
+Open `http://localhost:4200/products`.
+
+API note: `ProductService` defines `apiUrl = '/api/products'` but currently returns mock data. To use a real backend, update `src/app/core/services/product.service.ts` to call your API endpoints (e.g. `GET /api/products`, `POST /api/products`).
+
+Store API (public methods): `selectProduct`, `setSearch`, `setFilterCategory`, `toggleActive`, `removeProduct`, `loadProducts`, `createProduct`.
